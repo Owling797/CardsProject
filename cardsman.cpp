@@ -58,12 +58,15 @@ char translate(int n) // перевод номинала в текстовую �
 void MainDeck::createTable(int k) // создание таблицы единиц по количеству карт в основной колоде
 {
     deckTable = new int *[4];
-    int i, j;
+    int i, j, n;
+    n = k / 4;
+    if (this->jokers)
+        n++;
     for (i = 0; i < 4; i++)
     {
-        deckTable[i] = new int[k / 4];
+        deckTable[i] = new int[n]; // строк ровно по картам в каждой масти +1 для джокеров
     }
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++) // заполнение единицами всех, кроме джокеров
     {
         for (j = 0; j < k / 4; j++)
         {
@@ -71,6 +74,12 @@ void MainDeck::createTable(int k) // создание таблицы едини�
         }
     }
     this->number = k;
+    if (this->jokers)
+    {
+        deckTable[0][k / 4] = 1;
+        deckTable[2][k / 4] = 1;
+        this->number += 2;
+    }
 }
 
 void MainDeck::changeTable(int s, int r) // обнуление ячейки таблицы единиц
@@ -107,7 +116,7 @@ void GamersDeck::showDeck() // вывод колоды на экран
     cout << endl;
 }
 
-void GamersDeck::addCard(char s, int r) // добавить в колоду карту по масти и номиналу
+void GamersDeck::addCard(char s, int r) // добавить в колоду карту по масти и номиналу (только next, prev)
 {
     Card *temp = new Card(s, r);
 
@@ -236,6 +245,17 @@ Card *Player::recognizeCard(char *card) // распознать карту
             rank = 0;
     }
 
+    if (card[0] == 'J' && card[1] == 'R')
+    {
+        suit = 'R';
+        rank = 15;
+    }
+    if (card[0] == 'J' && card[1] == 'B')
+    {
+        suit = 'B';
+        rank = 15;
+    }
+
     Card *A = new Card(suit, rank);
     return A;
 }
@@ -273,21 +293,25 @@ void GameRules::giveMore(Player *x) // додать игроку до 6 карт
     char arr[4] = {'C', 'D', 'H', 'S'};
     char s;
     int r;
+    int cardsInSuit = (this->deckType) / 4;
+    if (jokers)
+        cardsInSuit++;
     n = x->getDeck()->getNumber();
     srand(time(0));
-    while (x->curDeck.getNumber() < 6 && main_Deck.getNumber())
+    while (x->curDeck.getNumber() < this->deckType / this->gamers && main_Deck.getNumber())
     {
-        while (this->main_Deck.deckTable[j = rand() % 4][k = rand() % ((this->deckType) / 4)] == 0 && this->main_Deck.getNumber()) // находим ненулевую ячейку главной колоды
+        while (this->main_Deck.deckTable[j = rand() % 4][k = rand() % (cardsInSuit)] == 0 && this->main_Deck.getNumber()) // находим ненулевую ячейку главной колоды
             ;
         if (this->main_Deck.getNumber())
         {
-            s = arr[j];                        // масть карты
-            r = k + 15 - (this->deckType) / 4; //номер карты (6...14 или 2...14)
+            s = arr[j];                        // масть карты (в случае джокеров будут только arr[0] или arr[2])
+            r = k + 15 - (this->deckType) / 4; //номер карты (6...14 или 2...14) или с джокерами (6...15 или 2...15)
             this->main_Deck.changeTable(j, k); // обнулить ячейку в главной колоде
 
             x->getDeck()->addCard(s, r);
         }
     }
+    cout << " DONE ";
 }
 
 Player *GameRules ::setPlayers() // задать игроков и раздать им карты
@@ -328,6 +352,51 @@ void GameRules::removePlayer(Player *A) // удалить из списка иг
     delete A;
 }
 
+///////////////
+void UserInterface::showInfoAttack(Player *cur_player, char trumpSuit)
+{
+    cout << endl
+         << "Player# " << cur_player->getIndex() << endl
+         << "Trump suit is:";
+    printSuit(trumpSuit);
+    cout << trumpSuit << "\033[0m" << endl; // козырь
+    cout << "Your cards: ";
+    cur_player->getDeck()->showDeck();
+    cout << endl
+         << "Enter a card or Submit (end) by pressing 'P'" << endl;
+}
+
+void UserInterface::showInfoDefence(Player *next_player, GamersDeck InGame, char trumpSuit)
+{
+    cout << endl
+         << "Player# " << next_player->getIndex() << endl
+         << "Cards to beat: ";
+    InGame.showDeck();
+    cout << "Trump suit is:";
+    printSuit(trumpSuit);
+    cout << trumpSuit << "\033[0m" << endl; // козырь
+    cout << "Your cards: ";
+    next_player->getDeck()->showDeck();
+    cout << "Enter a card or Pass (end) by pressing 'P'" << endl;
+}
+
+void UserInterface::showOpponentNext(Player *cur_player)
+{
+    cout << "Next player's deck: ";
+    cur_player->next->getDeck()->showDeck();
+    cout << endl;
+}
+
+void UserInterface::showOpponentAll(Player *cur_player)
+{
+    Player *crpl = cur_player->next;
+    while (cur_player->getIndex() != crpl->getIndex())
+    {
+        cout << "Player's #" << crpl->getIndex() << " deck: ";
+        crpl->getDeck()->showDeck();
+        cout << endl;
+    }
+}
 /////////////
 
 void Game::sort() // отсортировать карты на отбой по масти
@@ -379,16 +448,28 @@ void Game::giveAll(Player *x) // отдать игроку все карты, н
     this->attackCards.setTail(NULL);
 }
 
-int Game::check_attack(Card *A) // проверка, может ли карта побить какую-либо из карт на отбой, найдется самая "сложная" карта из оставшихся
+int Game::check_attack(Card *A) // проверка, может ли карта A побить какую-либо из карт на отбой, найдется самая "сложная" карта из оставшихся
 {
     int i = 0;
     Card *temp = this->InGame.getHead();
     while (temp != NULL)
     {
+        if (A->getSuit() == 'R') // джокер красный
+            if (temp->getSuit() == 'H' || temp->getSuit() == 'D')
+            {
+                temp->changeInGameFlag(); //inGameFlag = 1; // карта нашлась и побита но пока в игре
+                return i + 1;
+            }
+        if (A->getSuit() == 'B') //джокер белый
+            if (temp->getSuit() == 'C' || temp->getSuit() == 'S')
+            {
+                temp->changeInGameFlag(); //inGameFlag = 1; // карта нашлась и побита но пока в игре
+                return i + 1;
+            }
         if (A->getSuit() == temp->getSuit() && A->getRank() > temp->getRank() ||
             (A->getSuit() != temp->getSuit() && A->getSuit() == this->trumpSuit))
         {
-            temp->changeInGameFlag(); //inGameFlag = 1; // карта побита но пока в игре
+            temp->changeInGameFlag(); //inGameFlag = 1; // карта нашлась и побита но пока в игре
             return i + 1;
         }
         i++;
@@ -439,7 +520,8 @@ Player *Game::Action(Player *cur_player) // основная функция иг
     //ход игрока
     while (!cur_player->submitted && allActive < cur_player->next->getDeck()->getNumber()) // пока нет сабмита и карт не больше, чем у противника
     {
-        cout << endl
+        this->UI.showInfoAttack(cur_player, trumpSuit);
+        /*<< endl
              << "Player# " << cur_player->getIndex() << endl
              << "Trump suit is:";
         printSuit(this->trumpSuit);
@@ -448,7 +530,7 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         cur_player->getDeck()->showDeck();
         cout << endl
              << "Enter a card or Submit (end) by pressing 'P'" << endl;
-
+*/
         cin >> temp_card;
         card = (char *)temp_card.c_str();
         if (temp_card == "P")
@@ -485,10 +567,12 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         this->sort();
 
         if (!flag_0)
-            inGameRank = curCard->getRank(); // будет подкидывать такие
-        flag_0 = 1;                          // была введена карта
-        allActive++;                         // количество карт которые положил игрок1
-    }                                        // конец хода нападающего
+            inGameRank = curCard->getRank();    // будет подкидывать такие
+        flag_0 = 1;                             // была введена карта
+        allActive++;                            // количество карт которые положил игрок1
+        if (flag_0 == 1 && this->givemore == 0) // версия игры без подкидываний, только 1 карта на ход
+            break;
+    } // конец хода нападающего
 
     //this->giveMore(cur_player); // в варианте без докидок оно здесь////////////////////////////
 
@@ -514,7 +598,8 @@ Player *Game::Action(Player *cur_player) // основная функция иг
     //начало хода защищающегося
     while (allActive) // пока не закрыты все карты на отбой
     {
-        cout << endl
+        UI.showInfoDefence(next_player, InGame, trumpSuit);
+        /* << endl
              << "Player# " << next_player->getIndex() << endl
              << "Cards to beat: ";
         this->InGame.showDeck();
@@ -523,7 +608,13 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         cout << this->trumpSuit << "\033[0m" << endl; // козырь
         cout << "Your cards: ";
         next_player->getDeck()->showDeck();
-        cout << "Enter a card or Pass (end) by pressing 'P'" << endl;
+        cout << "Enter a card or Pass (end) by pressing 'P'" << endl;*/
+
+        if (this->addView == 1) // крапленые карты
+            UI.showOpponentNext(next_player);
+        if (this->addView == 2)
+            UI.showOpponentAll(next_player);
+
         cin >> temp_card;
         card = (char *)temp_card.c_str();
 
@@ -544,7 +635,7 @@ Player *Game::Action(Player *cur_player) // основная функция иг
             continue;
         }
 
-        if (curCard->getRank() == InGame.getTail()->getRank()) // возможен перевод хода
+        if (curCard->getRank() == InGame.getTail()->getRank() && this->pass) // возможен перевод хода
         {
             if (!flag_0 && next_player->next->getDeck()->getNumber() > InGame.getNumber())
             {
@@ -588,9 +679,9 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         // cout << "end it";
     }
 
-    for (i = 0; i < this->getPlayers(); i++)
+    for (i = 1; i <= this->getPlayers(); i++)
     {
-        cout << " er" << i << " ";
+        cout << " er" << i << " FROM " << this->getPlayers() << endl;
         this->giveMore(cur_player);
         cur_player = cur_player->next;
     }
