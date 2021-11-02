@@ -2,6 +2,7 @@
 #define CARDSMAN
 #include <iostream>
 #include <string>
+#include <math.h>
 
 class GamersDeck;
 class GameRules;
@@ -30,8 +31,8 @@ public:
     void setSuit(char s) { suit = s; }
     Card *getPrev() { return prev; }
     Card *getNext() { return next; }
-    friend char translate(int);  // перевод номинала в текстовую нотацию (J, Q, K, A)
-    friend void printSuit(char); // вывод значка и цвета вместо буквы
+    friend char translate(int, char); // перевод номинала в текстовую нотацию (J, Q, K, A)
+    friend void printSuit(char);      // вывод значка и цвета вместо буквы
     friend GamersDeck;
     friend Game;
 };
@@ -50,11 +51,13 @@ class MainDeck : public Deck //
 {
 protected:
     int **deckTable;
+    int jokers;
 
 public:
     MainDeck() : Deck(){};
     void createTable(int);      // создание таблицы единиц по количеству карт в основной колоде
     void changeTable(int, int); // обнуление ячейки таблицы
+
     friend GameRules;
 };
 
@@ -100,6 +103,7 @@ public:
     void pass();                                       // пропустить ход и забрать карты в игре себе
     void setNext(Player *A) { next = A; }
     friend GameRules;
+    // friend UserInterface;
 };
 
 class List // связный однонаправленный список игроков
@@ -121,6 +125,11 @@ protected:
     int deckType;
     int gamers;
     MainDeck main_Deck;
+    int givemore = 1; // 0 - не подкидн; 1 - подкидн
+    int pass = 1;     // 0 - не переводн; 1 - переводн
+    int jokers = 1;
+    int addView = 0; // 1 - следующий, 2 - все
+    //int specTrump = 0;
 
 public:
     GameRules(int type, int n)
@@ -134,14 +143,28 @@ public:
     char trumpSuit;     //козырная масть
     int winnersID = -1; // порядковый номер победителя
 
-    void setMainDeck() { main_Deck.createTable(deckType); } // создать основную колоду (банк) для заданного количества карт
-    Player *setPlayers();                                   // задать игроков и раздать им карты
-    int getType() { return deckType; }                      // получить количество карт в исходной колоде
-    void setTrumpSuit();                                    // установить случайную козырную масть
-    void giveMore(Player *);                                // додать игроку до 6 карт
-    void decreasePlayers() { gamers--; }                    // уменьшить на 1 текущее количество игроков в игре
-    int getPlayers() { return gamers; }                     // получить текущее количество игроков в игре
-    void removePlayer(Player *);                            // удалить из списка игрока
+    void setMainDeck()
+    {
+        main_Deck.jokers = jokers;
+        main_Deck.createTable(deckType);
+    }                                    // создать основную колоду (банк) для заданного количества карт
+    Player *setPlayers();                // задать игроков и раздать им карты
+    int getType() { return deckType; }   // получить количество карт в исходной колоде
+    void setTrumpSuit();                 // установить случайную козырную масть
+    void giveMore(Player *);             // додать игроку до 6 карт
+    void decreasePlayers() { gamers--; } // уменьшить на 1 текущее количество игроков в игре
+    int getPlayers() { return gamers; }  // получить текущее количество игроков в игре
+    void removePlayer(Player *);         // удалить из списка игрока
+};
+
+class UserInterface
+{
+public:
+    void showOpponentNext(Player *);
+    void showOpponentAll(Player *);
+    void showInfoAttack(Player *, char);
+    void showInfoDefence(Player *, GamersDeck, char);
+    friend Game;
 };
 
 class Game : public GameRules // игра
@@ -155,7 +178,18 @@ public:
     void sort();              // отсортировать карты на отбой
     Player *Action(Player *); // основная функция игры
     int check_attack(Card *); // проверка, может ли карта побить какую-либо из карт на отбой
+    UserInterface UI;
     //int passToNext();
+};
+
+class GeneralClass
+{
+private:
+    int setDeck;
+    void setPlayers();
+
+public:
+    void simpleMode();
 };
 
 #endif
