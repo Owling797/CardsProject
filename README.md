@@ -15,15 +15,22 @@ The additional rules can be plugged in by adding some flags while starting a pro
 
 	m	“more” 
 (You’ll be able to take a step with more than 1 card, but those cards must be the same rank)
+
 	p	“pass”
-(Despite beating cards-to-beat, you can enter some card from your deck that is the same rank as cards-to-beat. The fight-back-initiative is passed to the next player and you don’t need to defend cards anymore.)
+(Despite beating cards-to-beat, you can enter some card from your deck that is the same rank as cards-to-beat. The fight-back-initiative is passed to the next player and you don’t need to defend cards anymore)
+
 	j	“jokers”
-(Starting the game with 2 additional cards BB (black joker) and RR(red joker). BB can defend any black suitted card, RR - any red suitted.)
+(Starting the game with 2 additional cards BB (black joker) and RR(red joker). BB can defend any black suitted card, RR - any red suitted)
+
 	v	“view”
 (You’ll see your next opponent’s deck in each step)
+
 	a	“view all”
-(You’ll see decks of all of your opponents in each step.)
+(You’ll see decks of all of your opponents in each step)
+
 	c	“computer”
 (You will play one-on-one with the computer. Another additional rules are cancelled in this mode)
+
+
 
 
