@@ -1,34 +1,34 @@
 #include "cardsmanNEW.h"
 using namespace std;
 
-int main()
+int main(int argc, char *argv[]) // -m - giveMore; -p - pass; -j - jokers; -v - addView; -va - addView (all)
 {
-    Player *cur_player, *next_player;
-    int type, num;
-    cout << "Enter deck type and number of players" << endl;
-
-    cin >> type >> num;
-    /* while (!(type == 36 && type >= 6 * num || type == 52 && type >= 6 * num))
+    int giveMoreFlag = 0, passFlag = 0, jokersFlag = 0, addViewFlag = 0, compFlag = 0;
+    int i;
+    for (i = 0; i < argc; i++)
     {
-        cout << "Try again" << endl;
-        cin >> type >> num;
-    }*/
-
-    Game CurGame(type, num);           // создали объект класса правил
-    CurGame.setMainDeck();             // создание таблицы-колоды
-    cur_player = CurGame.setPlayers(); // создали циклично связанный список игроков (c кoлодами), получили первого
-    CurGame.setTrumpSuit();            //задали козырную масть
-                                       //закончилось создание игроков//
-
-    while (cur_player->next != NULL && CurGame.getPlayers() > 1)
-    {
-        next_player = CurGame.Action(cur_player);
-        cur_player = next_player;
+        if (argv[i][0] == 'm')
+            giveMoreFlag = 1;
+        if (argv[i][0] == 'p')
+            passFlag = 1;
+        if (argv[i][0] == 'j')
+            jokersFlag = 1;
+        if (argv[i][0] == 'v') // view
+            addViewFlag = 1;
+        if (argv[i][0] == 'a') // all
+            addViewFlag = 2;
+        if (argv[i][0] == 'c') // with computer
+            compFlag = 1;
     }
-    cout << "\033[2J"; // очистка терминала
-    cout << "RESULTS:" << endl
-         << "Winner is: Player #" << CurGame.winnersID << endl;
-    cout << "Looser is: #" << cur_player->getIndex();
+    if (compFlag)
+    {
+        giveMoreFlag = 0;
+        passFlag = 0;
+        jokersFlag = 0;
+        addViewFlag = 0;
+    }
+    GeneralClass GenCl(giveMoreFlag, passFlag, jokersFlag, addViewFlag, compFlag);
+    GenCl.gamePlay();
 
     return 0;
 }
