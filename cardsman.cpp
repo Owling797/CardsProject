@@ -38,7 +38,7 @@ void printSuit(char s) // черный: 30 текст, белый: 47 фон, к
 }
 
 Card::Card(char _suit, int _rank)
-{ // конструктор инициализации
+{ 
     suit = _suit;
     rank = _rank;
 }
@@ -96,7 +96,6 @@ void MainDeck::createTable(int k) // создание таблицы едини�
         deckTable[2][k / 4] = 1;
         deckTable[3][k / 4] = 0;
         this->number += 2;
-        //cout << deckTable[0][k / 4] << deckTable[1][k / 4] << deckTable[2][k / 4] << deckTable[3][k / 4] << endl;
     }
 }
 
