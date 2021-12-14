@@ -1,4 +1,4 @@
-#include "cardsman.h"
+#include "cardsmanNEW.h"
 using namespace std;
 
 int main(int argc, char *argv[]) // -m - giveMore; -p - pass; -j - jokers; -v - addView; -va - addView (all)
