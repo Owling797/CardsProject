@@ -27,7 +27,7 @@ there is already a player who admitted his turn and you need to defend some card
 	3. If it’s not possible to beat them, you need to enter ‘P’ and take cards to your deck.
 	
 
-**Defending rules**
+**Defence rules**
 
 Card (1) is able to defend another (2) if **they’re the same suit** and **card’s (1) rank is bigger then card’s (2)** or if **card’s (1) suit is trump**
 
