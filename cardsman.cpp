@@ -1,4 +1,4 @@
-#include "cardsman.h"
+#include "cardsmanNEW.h"
 #include <ctime>
 #include <random>
 #include <string>
@@ -38,7 +38,7 @@ void printSuit(char s) // черный: 30 текст, белый: 47 фон, к
 }
 
 Card::Card(char _suit, int _rank)
-{ 
+{ // конструктор инициализации
     suit = _suit;
     rank = _rank;
 }
@@ -96,6 +96,7 @@ void MainDeck::createTable(int k) // создание таблицы едини�
         deckTable[2][k / 4] = 1;
         deckTable[3][k / 4] = 0;
         this->number += 2;
+        //cout << deckTable[0][k / 4] << deckTable[1][k / 4] << deckTable[2][k / 4] << deckTable[3][k / 4] << endl;
     }
 }
 
@@ -357,7 +358,9 @@ Card *Player::recognizeCard(char *card) // распознать карту
 {
     int length = sprintf(card, "%s", card);
 
-    if (length < 2 || length > 3)
+    if (length < 2 || length > 3) /* ||
+        (int(card[0]) > 90 || int(card[0]) < 65)
+    )*/
     {
         cout << "incorrect input" << endl;
         Card *A = new Card('N', 0);
@@ -740,6 +743,12 @@ void GeneralClass::gamePlay()
         cout << "Enter deck type and number of players" << endl;
         cin >> type >> num;
     }
+    if (!std::cin)
+    {
+        cout << "Logical error";
+        return;
+    }
+
     while (!(type == 36 && type >= 6 * num || type == 52 && type >= 6 * num))
     {
         cout << "Try again" << endl;
@@ -785,10 +794,11 @@ Player *Game::Action(Player *cur_player) // основная функция иг
     Card *tempMech;
     int numMech, flagC = 0;
     cout << "\033[2J"; // очистка терминала
+
     if (this->comp && next_player->getIndex() == 2)
         next_player->setC();
     //ход игрока
-    while (!cur_player->submitted && allActive < cur_player->next->getDeck()->getNumber() && cur_player->getC() == 0) //(cur_player->getIndex() == 1 && !cur_player->getC() == 0 || !cur_player->getC() && !next_player->getC())) // пока нет сабмита и карт не больше, чем у противника
+    while (!cur_player->submitted && allActive < cur_player->next->getDeck()->getNumber() && cur_player->getC() == 0 && cur_player->getDeck()->cardsNumber) //(cur_player->getIndex() == 1 && !cur_player->getC() == 0 || !cur_player->getC() && !next_player->getC())) // пока нет сабмита и карт не больше, чем у противника
     {
         cout << endl
              << "Player# " << cur_player->getIndex();
@@ -799,6 +809,7 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         this->UI.showInfoAttack(cur_player, trumpSuit);
 
         cin >> temp_card;
+
         card = (char *)temp_card.c_str();
         if (temp_card == "P")
         {
@@ -843,7 +854,6 @@ Player *Game::Action(Player *cur_player) // основная функция иг
 
     } // конец хода нападающего (человека)
 
-    cout << cur_player->getIndex();
     if (cur_player->getC() && cur_player->getDeck()->getNumber() > 1)
     {
         i = 0;
@@ -866,7 +876,7 @@ Player *Game::Action(Player *cur_player) // основная функция иг
             i++;
         }
     }
-    giveMore(next_player);
+    giveMore(next_player); //////////////////////////////////////////////
     cur_player->submit();
     if (cur_player->getDeck()->getNumber() == 1 && cur_player->getC() && !flagC)
     {
@@ -902,7 +912,7 @@ Player *Game::Action(Player *cur_player) // основная функция иг
                 giveMore(cur_player);
                 giveMore(next_player);
                 next_player->getDeck()->sortNum(this->trumpSuit);
-                /**/ next_player->getDeck()->showDeck();
+
                 allActive = 0;
                 i = 0;
             }
@@ -937,8 +947,8 @@ Player *Game::Action(Player *cur_player) // основная функция иг
         if (temp_card == "P") // Pass
         {
             this->giveAll(next_player);
-            next_player = next_player->next;               // текущий игрок пропускает ход
-            cout << "next is " << next_player->getIndex(); //     cout << "P!!!";
+            next_player = next_player->next; // текущий игрок пропускает ход
+            cout << "next is " << next_player->getIndex();
             flag_pass = 1;
             break;
         }
@@ -994,8 +1004,10 @@ Player *Game::Action(Player *cur_player) // основная функция иг
     i = 1;
     Player *temp_player = next_player;
     if (flag_pass)
+    {
         while (temp_player->next->getIndex() != next_player->getIndex())
             temp_player = temp_player->next;
+    }
     while (cur_player->getIndex() != temp_player->getIndex())
     {
         this->giveMore(cur_player);
