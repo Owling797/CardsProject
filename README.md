@@ -20,7 +20,7 @@ You also know a special trump suit.
 
 there is already a player who admitted his turn and you need to defend some cards that the first player(s) put down
 	
-	1. Choose one of your cards, which can defend one of your opponent(s)’s put-down-cards,  and enter it into the console. 
+	1. Choose one of your cards, which can beat one of your opponent(s)’s put-down-cards, and enter it into the console. 
 
 	2. When you've beaten every card from the “cards to beat” list, the initiative will go to you (you will be the first to take a step).  
 	
