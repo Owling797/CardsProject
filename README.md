@@ -55,7 +55,7 @@ You’ll see your next opponent’s deck in each step
 You’ll see decks of all of your opponents in each step
 
 	c	“computer”
-You will play one-on-one with the computer. Another additional rules are cancelled in this mode
+You will play one-on-one with the computer. Another additional rules are cancelled in this mode (won't be soon)
 
 
 
