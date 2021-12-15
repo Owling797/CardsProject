@@ -32,6 +32,7 @@ there is already a player who admitted his turn and you need to defend some card
 Card (1) is able to beat another (2) if **they’re the same suit** and **card’s (1) rank is bigger then card’s (2)** or if **card’s (1) suit is trump**
 
 **Features**
+-----------------------------------------------------
 
 The game can be played on the basic or additional settings.
 
