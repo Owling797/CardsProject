@@ -27,7 +27,7 @@ To put a card down you need to choose the card and tap it’s suit and rank into
 2. When you've beaten every card from the “cards to beat” list, the initiative will go to you (you will be the first to take a step).  
 3. If it’s not possible to beat them, you need to enter ‘P’ and take cards to your deck.
 
-### >> Defence rules
+### Defence rules
 
 Card (1) is able to beat another (2) if *they’re the same suit* and **card’s (1) rank is bigger then card’s (2)** or if **card’s (1) suit is trump**
 
