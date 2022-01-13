@@ -4,7 +4,6 @@ Part of educational and technological practice at BMSTU
 
 This programm is a card game "Durak" imitator.
 
-Was made by :heart_on_fire:
 
 ### >> About
 "Durak" is a game where you and your opponent(s) have some decks with cards from the main deck. You need to "beat" all cards which are your opponent(s) put down while their turn was. If you were able to do it, your turn starts. You need to put down some of your cards according to rules, which your opponent(s) will try to beat. The goal is to get rid of all of your cards first.
