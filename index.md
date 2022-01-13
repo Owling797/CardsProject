@@ -37,22 +37,22 @@ Card (1) is able to beat another (2) if *they’re the same suit* and *card’s 
 - The basic rules provide for the possibility to take a step with only one card.
 - The additional rules can be plugged in by adding some flags while starting a programm:
 
-	 m	“more” 
+	 **m**	“more” 
 *You’ll be able to take a step with more than 1 card, but those cards must be the same rank*
 
-	 p	“pass”
+	 **p**	“pass”
 *Despite beating cards-to-beat, you can enter some card from your deck that is the same rank as cards-to-beat. The fight-back-initiative is passed to the next player and you don’t need to defend cards anymore*
 
-	 j	“jokers”
+	 **j**	“jokers”
 *Starting the game with 2 additional cards BB (black joker) and RR(red joker). BB can defend any black suitted card, RR - any red suitted*
 
-	 v	“view”
+	 **v**	“view”
 *You’ll see your next opponent’s deck in each step*
 
-	 a	“view all”
+	 **a**	“view all”
 *You’ll see decks of all of your opponents in each step*
 
-	 c	“computer”
+	 **c**	“computer”
 *You will play one-on-one with the computer. Other additional rules are cancelled in this mode (it will be fixed soon)*
 
 ### Requirements:
