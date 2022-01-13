@@ -1,12 +1,31 @@
-## Welcome to GitHub Pages
+# Card Game
 
-You can use the [editor on GitHub](https://github.com/Owling797/CardsProject/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Part of educational and technological practice at BMSTU
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This programm is a card game "Durak" imitator.
 
-### Markdown
+## >> About
+"Durak" is a game where you and your opponent(s) have some decks with cards from the main deck. You need to "beat" all cards which are your opponent(s) put down while their turn. If you were able to do it, your turn starts. You need to put down some of your cards according to rules, which your opponent(s) will try to beat. The goal is to get rid of all of your cards first.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## >> The game process
+
+At the start of the game you have your own 6-cards deck from the main deck.
+
+Main deck contains 4 suits, each suit contains 9 (6...A) or 13(2...A) cards.
+
+You also know a special trump suit.
+
+### If you’re the first to take a step:
+
+To put a card down you need to choose the card and tap it’s suit and rank into the console. 
+
+### If you’re the defending one:
+
+... then there is already a player who admitted his turn and you need to defend some cards that the first player(s) put down
+
+1. Choose one of your cards, which can beat one of your opponent(s)’s put-down-cards, and enter it into the console. 
+2. When you've beaten every card from the “cards to beat” list, the initiative will go to you (you will be the first to take a step).  
+3. If it’s not possible to beat them, you need to enter ‘P’ and take cards to your deck.
 
 ```markdown
 Syntax highlighted code block
