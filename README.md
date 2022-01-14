@@ -10,11 +10,9 @@ This programm is a card game "Durak" imitator.
 ![AnimationMP](https://user-images.githubusercontent.com/62678416/149420610-04d0353d-2268-4996-9f88-4991acb701ee.gif)
 
 
-### >> The game process
-[The game process](https://owling797.github.io/CardsProject/docs/Game.html)
-
-### >> Features
-[Features](https://owling797.github.io/CardsProject/docs/Features.html)
+### >> Table of contents
+- [The game process](https://owling797.github.io/CardsProject/docs/Game.html)
+- [Features](https://owling797.github.io/CardsProject/docs/Features.html)
 
 ### Requirements:
 The following must be installed on the device:
